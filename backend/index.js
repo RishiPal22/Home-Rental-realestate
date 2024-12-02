@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const userRouter = require('./routes/Userroutes.js')
 const authrouter = require('./routes/Authroute.js')
+const Errorhandler = require('./middleware/Error.js')
 
 dotenv.config() 
 mongoose.connect(process.env.MONGOSTRING, {
@@ -21,3 +22,5 @@ app.use(express.json());
 
 app.use('/api/user', userRouter)
 app.use('/api/auth', authrouter)
+
+app.use(Errorhandler);
