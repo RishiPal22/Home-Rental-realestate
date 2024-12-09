@@ -1,10 +1,19 @@
 const express = require('express')
 const app = express()
 const dotenv = require('dotenv')
+const cors = require('cors')
 const mongoose = require('mongoose')
 const userRouter = require('./routes/Userroutes.js')
 const authrouter = require('./routes/Authroute.js')
 const Errorhandler = require('./middleware/Error.js')
+
+
+const corsOptions = {
+    origin: "http://localhost:5173",
+    methods: "PUT, GET, POST, DELETE",
+    credentials: true
+};
+app.use(cors(corsOptions));
 
 dotenv.config() 
 mongoose.connect(process.env.MONGOSTRING, {

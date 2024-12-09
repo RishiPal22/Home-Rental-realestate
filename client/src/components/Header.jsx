@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 export default function Header() {
   return (
     <>
-      <header className='py-2 sm:py-3 bg-gray-200 shadow-lg justify-between flex w-full'>
+      <header className='py-2 sm:py-3 bg-slate-200 shadow-2xl justify-between flex w-full'>
         <h1 className='flex justify-between items-center border-black' >
           <p className='text-gray-900 font-serif text-sm sm:text-3xl font-medium mx-2 sm:mx-6 align-middle'>Pal<span className='text-gray-500 '>Estate</span></p>
         </h1> 

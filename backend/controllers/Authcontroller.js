@@ -9,9 +9,8 @@ const signup = async(req,res,next)=>{
     const newUser = new User({username:username,email:email,password:hashedpassword})
     // const salt = bcrypt.gensalt(10)
     await newUser.save();
-    console.log("hi")
     console.log(hashedpassword)
-    res.send(saveuser)
+    res.send(newUser)
     }
     catch(err){
 
