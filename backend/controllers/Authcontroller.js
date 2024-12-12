@@ -1,5 +1,7 @@
+const Errorhandler = require("../middleware/Error.js");
 const User = require("../models/Usermodel.js");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 const signup = async(req,res,next)=>{
 
@@ -18,4 +20,25 @@ const signup = async(req,res,next)=>{
     }
 };
 
-module.exports = signup;
+const signin =  async(req,res,next) => {
+    const {email, password} = req.body
+    try{
+        const validUser = await User.findOne(email)
+        if(!validUser){
+            return next(Errorhandler(404,"User not found."))
+        }
+        const validPassword = bcrypt.compareSync(password, validUser.password)
+        if(!validPassword){
+            return next(Errorhandler(404,"Wrong credentials."))
+        }
+        const token = jwt.sign({id:validUser._id}, process.env.JWT_SECRET);
+        res.cookie("accessToken", token, {httpOnly:true}).status(200)
+        .json(validUser);
+        
+    }
+    catch(error){
+        next(error)
+    }
+};
+
+module.exports = signup, signin;

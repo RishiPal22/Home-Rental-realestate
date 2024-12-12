@@ -7,7 +7,7 @@ const userRouter = require('./routes/Userroutes.js')
 const authrouter = require('./routes/Authroute.js')
 const Errorhandler = require('./middleware/Error.js')
 
-
+// CORS HANDLING
 const corsOptions = {
     origin: "http://localhost:5173",
     methods: "PUT, GET, POST, DELETE",
@@ -15,6 +15,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// MONGODB CONNECTION
 dotenv.config() 
 mongoose.connect(process.env.MONGOSTRING, {
     useNewUrlParser: true,
@@ -32,4 +33,12 @@ app.use(express.json());
 app.use('/api/user', userRouter)
 app.use('/api/auth', authrouter)
 
-app.use(Errorhandler);
+app.use((err, req, res, next) => {
+    const resStatus = err.statusCode || 500;
+    const message = err.message || "Internal server Error";
+    return res.status(resStatus).json({ 
+        success: false,
+        resStatus,
+        message,
+    });
+});
