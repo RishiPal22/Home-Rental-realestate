@@ -11,7 +11,7 @@ const Errorhandler = require('./middleware/Error.js')
 const corsOptions = {
     origin: "http://localhost:5173",
     methods: "PUT, GET, POST, DELETE",
-    credentials: true
+    credentials: 'true'
 };
 app.use(cors(corsOptions));
 
@@ -34,6 +34,9 @@ app.use('/api/user', userRouter)
 app.use('/api/auth', authrouter)
 
 app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err); // If headers are already sent, delegate to the default Express error handler
+    }
     const resStatus = err.statusCode || 500;
     const message = err.message || "Internal server Error";
     return res.status(resStatus).json({ 

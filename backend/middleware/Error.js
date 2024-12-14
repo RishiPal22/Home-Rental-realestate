@@ -1,12 +1,8 @@
-const Errorhandler = (err,req,res,next) => {
-    const resStatus = err.status || 500
-    const resMssg = err.message || "Something went wrong!"
-    res.status(resStatus)
-    res.json({
-        success: false,
-        Statuscode: resStatus,
-        message: resMssg
-    });
-};
+const Errorhandler = (statusCode, message) => {
+    const error = new Error();
+    error.statusCode = statusCode;
+    error.message = message;
+    return error;
+  };
 
 module.exports = Errorhandler;

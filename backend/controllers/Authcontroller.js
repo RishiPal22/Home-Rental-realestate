@@ -2,6 +2,7 @@ const Errorhandler = require("../middleware/Error.js");
 const User = require("../models/Usermodel.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
 const signup = async(req,res,next)=>{
 
@@ -21,24 +22,29 @@ const signup = async(req,res,next)=>{
 };
 
 const signin =  async(req,res,next) => {
-    const {email, password} = req.body
+    const { email, password } = req.body
     try{
-        const validUser = await User.findOne(email)
+
+        if(!email && !password){
+            return next(Errorhandler(400,"Please Enter email and password"))
+        }
+        const validUser = await User.findOne({email})
         if(!validUser){
-            return next(Errorhandler(404,"User not found."))
+            return next(Errorhandler(404,"Invalid Email"))
         }
         const validPassword = bcrypt.compareSync(password, validUser.password)
         if(!validPassword){
             return next(Errorhandler(404,"Wrong credentials."))
         }
+        
         const token = jwt.sign({id:validUser._id}, process.env.JWT_SECRET);
-        res.cookie("accessToken", token, {httpOnly:true}).status(200)
-        .json(validUser);
+        const {password:pass , ...rest} = validUser._doc
+        res.cookie("accessToken", token, { httpOnly:false, secure: false }).status(200).json(validUser)
         
     }
     catch(error){
-        next(error)
+        next(Errorhandler(500,"Internal Server Error"))
     }
 };
 
-module.exports = signup, signin;
+module.exports = {signup,signin};
