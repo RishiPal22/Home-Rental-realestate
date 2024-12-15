@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {signinStart, signinsuccess, signinfailure} from '../redux/user/userSlice'
+import OAuth from '../components/OAuth';
 
 
 export default function signin() {
@@ -34,7 +35,7 @@ export default function signin() {
         headers: {
           'Content-Type': "application/json"
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData)  
       });
       const data = await res.json()
       console.log(data)
@@ -88,8 +89,7 @@ export default function signin() {
           {loading ? 'Loading...' : 'Sign In'}
         </button><br />
 
-        <button type='button' id='googlesingin'
-          className='bg-red-600 hover:bg-red-700 text-white sm:w-80 w-36 sm:h-12 rounded-lg'>Continue with Google</button>
+        <OAuth />
 
         <p> Don't have an account? <Link to='/signup' className='text-blue-600'>SignUp</Link></p>
 
