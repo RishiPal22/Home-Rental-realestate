@@ -1,26 +1,32 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {signinStart, signinsuccess, signinfailure} from '../redux/user/userSlice'
 
 
 export default function signin() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  // const [errors, setErrors] = useState(false);
+  const { Loading: loading, Error: errors } = useSelector((state) => state.user);
+
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     // if(!email && !password){
     //   return next(Errorhandler(400,"Please provide email and password."))
     // }
-    setLoading(true)
+    dispatch(signinStart())
 
-    if (!formData.email || !formData.password) {
-      setErrors(true)      
-      setSuccess(false)
-      setLoading(false);
-    }
+    // if (!formData.email || !formData.password) {
+      // setErrors(true)      
+      // setSuccess(false)
+      // setLoading(false);
+    //   dispatch(signinfailure())
+    // }
 
     try {
       const res = await fetch('http://localhost:3000/api/auth/signin', {
@@ -34,22 +40,19 @@ export default function signin() {
       console.log(data)
 
       if (data.success === false){
-        setErrors(data.message)
-        setLoading(false)
+        dispatch(signinfailure(data.message))
         console.log(data.message)
         return
       }
 
-      setLoading(false)
-      setErrors(false)
+      dispatch(signinsuccess(data))
       console.log(formData)
       setSuccess(true)
       setFormData({})
       navigate('/')
 
     } catch (error) {
-      setLoading(false)
-      setSuccess(false)
+      dispatch(signinfailure(error.message))
     };
   }
 
