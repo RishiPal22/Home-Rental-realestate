@@ -14,6 +14,8 @@ const corsOptions = {
     credentials: 'true'
 };
 app.use(cors(corsOptions));
+app.use(express.json());
+
 
 // MONGODB CONNECTION
 dotenv.config() 
@@ -24,11 +26,11 @@ mongoose.connect(process.env.MONGOSTRING, {
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.error("Failed to connect to MongoDB", err));
 
+
+
 app.listen(3000,(req,res)=>{
     console.log('Server is running on port 3000')
 });
-
-app.use(express.json());
 
 app.use('/api/user', userRouter)
 app.use('/api/auth', authrouter)

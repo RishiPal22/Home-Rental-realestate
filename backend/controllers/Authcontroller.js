@@ -4,47 +4,78 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
-const signup = async(req,res,next)=>{
+const signup = async (req, res, next) => {
 
-    try{
-    const {username, email, password} = req.body;
-    const hashedpassword = await bcrypt.hash(password, 11)
-    const newUser = new User({username:username,email:email,password:hashedpassword})
-    // const salt = bcrypt.gensalt(10)
-    await newUser.save();
-    console.log(hashedpassword)
-    res.send(newUser)
+    try {
+
+        const { username, email, password } = req.body;
+        const hashedpassword = await bcrypt.hash(password, 10)
+        const newUser = new User({ username: username, email: email, password: hashedpassword })
+        // const salt = bcrypt.gensalt(10)
+        await newUser.save();
+        console.log(hashedpassword)
+        res.send(newUser)
     }
-    catch(err){
-
+    catch (err) {
         next(err)
     }
 };
 
-const signin =  async(req,res,next) => {
+const signin = async (req, res, next) => {
     const { email, password } = req.body
-    try{
+    try {
 
-        if(!email && !password){
-            return next(Errorhandler(400,"Please Enter email and password"))
+        if (!email && !password) {
+            return next(Errorhandler(400, "Please Enter email and password"))
         }
-        const validUser = await User.findOne({email})
-        if(!validUser){
-            return next(Errorhandler(404,"Invalid Email"))
+        const validUser = await User.findOne({ email })
+        if (!validUser) {
+            return next(Errorhandler(404, "Invalid Email"))
         }
         const validPassword = bcrypt.compareSync(password, validUser.password)
-        if(!validPassword){
-            return next(Errorhandler(404,"Wrong credentials."))
+        if (!validPassword) {
+            return next(Errorhandler(404, "Wrong credentials."))
         }
-        
-        const token = jwt.sign({id:validUser._id}, process.env.JWT_SECRET);
-        const {password:pass , ...rest} = validUser._doc
-        res.cookie("accessToken", token, { httpOnly:false, secure: false }).status(200).json(validUser)
-        
+
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+        const { password: pass, ...rest } = validUser._doc
+        res.cookie("accessToken", token, { httpOnly: false, secure: false }).status(200).json(validUser)
+
     }
-    catch(error){
-        next(Errorhandler(500,"Internal Server Error"))
+    catch (error) {
+        next(Errorhandler(500, "Internal Server Error"))
     }
 };
 
-module.exports = {signup,signin};
+const google = async (req, res,next) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (user) {
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+            const { password: pass, ...rest } = user._doc;
+            res.cookie("accesstoken", token, { httpOnly: false, secure: false }).status(201).json(rest)
+            console.log("user is logged in .")
+        }
+        else {
+            const generatedPassword = Math.random().toString(36).slice(-8)
+            const hashpassword = bcrypt.hashSync(generatedPassword, 10)
+
+            const newUser = new User({
+                username: req.body.name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-4),
+                email: req.body.email, password: hashpassword, avatar: req.body.photo
+            })
+
+            await newUser.save()
+            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+            const { password: pass, ...rest } = newUser._doc
+            res.cookie("accesstoken", token, { httpOnly: false, secure: false }).status(201).json(rest)
+            console.log("User registered.")
+
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { signup, signin, google };

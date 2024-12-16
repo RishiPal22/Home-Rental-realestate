@@ -17,6 +17,10 @@ const userSchema = new Schema({
         type: String,
         max: 50,
         required: true
+    },
+    avatar:{
+        type: String,
+        default: "https://pixabay.com/vectors/avatar-icon-placeholder-facebook-1577909/"
     }
 }, {timestamps:true});
 
