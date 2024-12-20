@@ -20,7 +20,7 @@ const userSchema = new Schema({
     },
     avatar:{
         type: String,
-        default: "https://pixabay.com/vectors/avatar-icon-placeholder-facebook-1577909/"
+        default: "https://img.freepik.com/free-vector/mysterious-mafia-man-wearing-hat_52683-34829.jpg?semt=ais_hybrid"
     }
 }, {timestamps:true});
 
