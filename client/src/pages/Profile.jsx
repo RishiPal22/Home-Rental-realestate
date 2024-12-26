@@ -1,20 +1,58 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useRef } from 'react'
+import { useState } from 'react'
 
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user)
   const fileRef = useRef(null)
+  const [error, setError] = useState(null)
+  const [imageUrl, setImageUrl] = useState(currentUser.avatar)
+
+
+  const handlefileupload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) {
+      setError('Please select an image')
+      return
+    }
+
+    const data = new FormData()
+    data.append('file', file)
+    data.append('upload_preset', 'first_time_using_cloudinary')
+    data.append('cloud_name', 'dkk6lmgxq')
+
+    try {
+      const res = await fetch('https://api.cloudinary.com/v1_1/dkk6lmgxq/image/upload', {
+        method: "POST",
+        body: data
+      })
+
+      if (!res.ok) {
+        throw new Error('File upload failed')
+      }
+
+      const uploadedImageUrl = await res.json()
+      console.log(uploadedImageUrl)
+      setImageUrl(uploadedImageUrl.url)
+
+      console.log(file)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
 
   return (<>
     <h1 className='sm:text-5xl font-semibold text-center p-2'>Profile</h1>
     <div className='flex flex-col items-center'>
 
       <form className='flex flex-col items-center m-1 p-3'>
-      <input type='file' useref={fileRef}  />
+        <input type='file' onChange={handlefileupload}
+          ref={fileRef} accept='images/*' hidden />
 
-        <img value={currentUser.avatar} alt='Profile' onClick={() => fileRef.current.click()}
-          className='rounded-full p-1 m-2' />
+        <img className='rounded-full h-40 w-40 p-1 m-2' src={imageUrl} alt='Profile' onClick={() => fileRef.current.click()} /><br/>
+        {error && <p className='text-red-500'>{error}</p>}
 
         <input className='bg-slate-100 w-40 sm:w-80 sm:h-14 p-2 rounded-lg'
           type='text' id='username' value={currentUser.username} /><br />
