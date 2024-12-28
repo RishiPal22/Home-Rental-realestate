@@ -5,6 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const userRouter = require('./routes/Userroutes.js')
 const authrouter = require('./routes/Authroute.js')
+const cookieParser = require('cookie-parser')
 const Errorhandler = require('./middleware/Error.js')
 
 // CORS HANDLING
@@ -13,9 +14,10 @@ const corsOptions = {
     methods: "PUT, GET, POST, DELETE",
     credentials: 'true'
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
-
+app.use(cookieParser());
 
 // MONGODB CONNECTION
 dotenv.config() 
