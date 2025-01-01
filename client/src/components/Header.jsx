@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 export default function Header() {
-  const {currentUser} = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user)
   return (
     <>
       <header className='py-2 sm:py-3 bg-slate-200 shadow-2xl justify-between flex w-full'>
@@ -18,11 +18,16 @@ export default function Header() {
         <div className='justify-end flex p-1 mx-2 sm:mx-6 space-x-4 border-x-4 cursor-pointer'>
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
-          <Link to="/profile">
+          <Link to='/profile'>
             {currentUser ? (
-            <img className='w-10 h-9 rounded-lg' 
-            src={currentUser.avatar} alt='Profile'/> ) : ( SignIn )}
-            </Link>
+              <img
+                className='rounded-full h-7 w-7 object-cover'
+                src={currentUser.avatar}
+                alt='profile'
+              />
+            ) : (
+              <Link to="/signin" className='text-blue-500'>Sign In</Link>)}
+          </Link>
         </div>
       </header>
     </>

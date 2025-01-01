@@ -12,7 +12,8 @@ const Errorhandler = require('./middleware/Error.js')
 const corsOptions = {
     origin: "http://localhost:5173",
     methods: "PUT, GET, POST, DELETE",
-    credentials: 'true'
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));

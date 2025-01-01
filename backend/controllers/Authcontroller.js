@@ -38,8 +38,11 @@ const signin = async (req, res, next) => {
         }
 
         const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+        console.log("User ID for generated token:", validUser._id);
+
+        // console.log("Decoded user ID", id)
         const { password: pass, ...rest } = validUser._doc
-        res.cookie("accessToken", token, { httpOnly: true }).status(200).json(validUser)
+        res.cookie("access_token", token, { httpOnly: true }).status(200).json(rest)
 
     }
     catch (error) {
@@ -53,7 +56,7 @@ const google = async (req, res,next) => {
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             const { password: pass, ...rest } = user._doc;
-            res.cookie("accesstoken", token, { httpOnly: true }).status(201).json(rest)
+            res.cookie("access_token", token, { httpOnly: true }).status(201).json(rest)
             console.log("user is logged in .")
         }
         else {
