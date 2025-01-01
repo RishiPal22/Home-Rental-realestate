@@ -16,8 +16,8 @@ export default function Header() {
           <IoSearchOutline className='text-gray-600 text-sm sm:text-xl mx-1' />
         </form>
         <div className='justify-end flex p-1 mx-2 sm:mx-6 space-x-4 border-x-4 cursor-pointer'>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
+          <Link to="/"><p>Home</p></Link>
+          <Link to="/about"><p>about</p></Link>
           <Link to='/profile'>
             {currentUser ? (
               <img
@@ -25,8 +25,8 @@ export default function Header() {
                 src={currentUser.avatar}
                 alt='profile'
               />
-            ) : (
-              <Link to="/signin" className='text-blue-500'>Sign In</Link>)}
+            ) : ( <p>SignIn</p>)}
+              {/* <Link to="/signin" className='text-blue-500'>Sign In</Link>)} */}
           </Link>
         </div>
       </header>

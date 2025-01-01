@@ -81,4 +81,9 @@ const google = async (req, res,next) => {
     }
 };
 
-module.exports = { signup, signin, google };
+const usersignOut = (req, res) => {
+    res.clearCookie("access_token")
+    res.send("User Logged out.")
+};
+
+module.exports = { signup, signin, google, usersignOut };

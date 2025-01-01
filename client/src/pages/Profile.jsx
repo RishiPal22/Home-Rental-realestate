@@ -1,7 +1,10 @@
 import React from 'react'
 import { useRef } from 'react'
 import { useState } from 'react'
-import { updateuserFailure, updateusersuccess, updateuserStart } from '../redux/user/userSlice'
+import { updateuserFailure, updateusersuccess, updateuserStart, 
+deleteUserStart, deleteUserFailure, deleteUserSuccess, signoutUserFailure, 
+signoutUserStart,
+signoutUserSuccess} from '../redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 export default function Profile() {
@@ -72,8 +75,6 @@ export default function Profile() {
 
     try {
     
-      
-
       // const token = document.cookie.split('; ').find(row => row.startsWith('access_token'))?.split('=')[1];
       // console.log("token", token)
 
@@ -101,13 +102,49 @@ export default function Profile() {
         return
       }
 
-      dispatch(updateusersuccess(data.updatedUser))
+      dispatch(updateusersuccess(data))
     } catch (error) {
       dispatch(updateuserFailure(error.message))
       console.log(" hello ",error)
     }
   }
 
+  const handleUserDelete = async () => {
+    try{
+
+      dispatch(deleteUserStart())
+
+      const res = await fetch(`api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      })
+      const data = await res.json()
+      if (data.success === false){
+        dispatch(deleteUserFailure(data.message))
+      }
+      dispatch(deleteUserSuccess())
+    }catch(error){
+      dispatch(deleteUserFailure(error.message))
+      console.log(error)
+    }
+  }
+
+  const handleUserSignout = async() => {
+    try{
+      dispatch(signoutUserStart())
+      const res = await fetch('api/auth/signout', {
+        method: 'GET'
+      });
+      const data = await res.json()
+      if (data.success === false){
+        dispatch(signoutUserFailure(data))
+      }
+      dispatch(signoutUserSuccess())
+    }catch(error){
+      dispatch(signoutUserFailure(error.message))
+      console.log(error)
+    }
+
+  }
 
   return (<>
     <h1 className='sm:text-5xl font-semibold text-center p-2'>Profile</h1>
@@ -134,14 +171,15 @@ export default function Profile() {
 
         <button disabled={loading}
           className='text-white  w-40 sm:w-80 bg-slate-700 hover:bg-slate-800 rounded-lg sm:h-9 sm:5 m-1 '>
-          {loading ? 'UPDATING...' : 'UPDATE'}
+          {loading ? 'Loading...' : 'UPDATE'}
         </button>
 
       </form>
       <div className="flex justify-between  sm:w-80 mt-2 px-3">
-        <span className='text-red-600 cursor-pointer'>Delete Account</span>
-        <span className='text-red-600 cursor-pointer' >Sign Out</span>
+        <span onClick={handleUserDelete} className='text-red-600 cursor-pointer'>Delete Account</span>
+        <span onClick={handleUserSignout} className='text-red-600 cursor-pointer' >Sign Out</span>
       </div>
+      <p className='text-red-600'>{errors ? error : ""}</p>
     </div>
 
   </>
