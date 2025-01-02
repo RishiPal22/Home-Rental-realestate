@@ -71,7 +71,7 @@ const google = async (req, res,next) => {
             await newUser.save()
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
             const { password: pass, ...rest } = newUser._doc
-            res.cookie("accesstoken", token, { httpOnly: true }).status(201).json(rest)
+            res.cookie("access_token", token, { httpOnly: true }).status(201).json(rest)
             console.log("User registered.")
 
         }
@@ -83,7 +83,7 @@ const google = async (req, res,next) => {
 
 const usersignOut = (req, res) => {
     res.clearCookie("access_token")
-    res.send("User Logged out.")
+    res.status(200).json("User Logged out.")
 };
 
 module.exports = { signup, signin, google, usersignOut };

@@ -138,13 +138,14 @@ export default function Profile() {
       if (data.success === false){
         dispatch(signoutUserFailure(data))
       }
-      dispatch(signoutUserSuccess())
+      dispatch(signoutUserSuccess());
+      
     }catch(error){
       dispatch(signoutUserFailure(error.message))
       console.log(error)
     }
 
-  }
+  };
 
   return (<>
     <h1 className='sm:text-5xl font-semibold text-center p-2'>Profile</h1>

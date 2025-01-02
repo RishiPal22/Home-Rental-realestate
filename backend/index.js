@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const userRouter = require('./routes/Userroutes.js')
 const authrouter = require('./routes/Authroute.js')
 const cookieParser = require('cookie-parser')
+const listingRouter = require('./routes/Listingroute.js')
 const Errorhandler = require('./middleware/Error.js')
 
 // CORS HANDLING
@@ -37,6 +38,7 @@ app.listen(3000,(req,res)=>{
 
 app.use('/api/user', userRouter)
 app.use('/api/auth', authrouter)
+app.use('/api/listing', listingRouter)
 
 app.use((err, req, res, next) => {
     if (res.headersSent) {
