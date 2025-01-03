@@ -6,13 +6,14 @@ deleteUserStart, deleteUserFailure, deleteUserSuccess, signoutUserFailure,
 signoutUserStart,
 signoutUserSuccess} from '../redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 export default function Profile() {
   const { currentUser, Loading: loading, Error: errors } = useSelector((state) => state.user)
   const fileRef = useRef(null)
   const [error, setError] = useState(null)
   const [imageUrl, setImageUrl] = useState(currentUser.avatar)
-  const [file, setFile] = useState(undefined);
+  // const [file, setFile] = useState(undefined);
   const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
@@ -171,9 +172,11 @@ export default function Profile() {
           onChange={handleChange} /><br />
 
         <button disabled={loading}
-          className='text-white  w-40 sm:w-80 bg-slate-700 hover:bg-slate-800 rounded-lg sm:h-9 sm:5 m-1 '>
+          className='text-white  w-40 sm:w-80 bg-slate-700 hover:bg-slate-800 rounded-lg sm:h-9 m-1 '>
           {loading ? 'Loading...' : 'UPDATE'}
         </button>
+
+        <Link className='text-white w-40 sm:w-80 bg-green-600 rounded-lg sm:h-9 m-1 p-1 text-center' to='/createlisting'>Create Listing</Link>
 
       </form>
       <div className="flex justify-between  sm:w-80 mt-2 px-3">
