@@ -4,10 +4,10 @@ require('dotenv').config();
 
 const VerifyToken = (req, res, next) => {
  
-    const token = req.cookies.access_token || req.headers.authorization?.split(" ")[1];;
+    const token = req.cookies.access_token || req.headers.authorization?.split(" ")[1];
     console.log("Token:", token);
     console.log("Token from cookies:", req.cookies.access_token);
-    console.log("Token from Authorization header:", req.headers.authorization);
+    // console.log("Token from Authorization header:", req.headers.authorization);
     
   
     if (!token) return next(Errorhandler(401, 'Unauthorized'));

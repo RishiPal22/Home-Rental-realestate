@@ -1,16 +1,20 @@
 import React from 'react'
 import { useRef } from 'react'
 import { useState } from 'react'
-import { updateuserFailure, updateusersuccess, updateuserStart, 
-deleteUserStart, deleteUserFailure, deleteUserSuccess, signoutUserFailure, 
-signoutUserStart,
-signoutUserSuccess} from '../redux/user/userSlice'
+import {
+  updateuserFailure, updateusersuccess, updateuserStart,
+  deleteUserStart, deleteUserFailure, deleteUserSuccess, signoutUserFailure,
+  signoutUserStart,
+  signoutUserSuccess
+} from '../redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 export default function Profile() {
   const { currentUser, Loading: loading, Error: errors } = useSelector((state) => state.user)
   const fileRef = useRef(null)
+  const [userListings, setUserListings] = useState([])
+  const [showlistingserror, setshowlistingserror] = useState(false)
   const [error, setError] = useState(null)
   const [imageUrl, setImageUrl] = useState(currentUser.avatar)
   // const [file, setFile] = useState(undefined);
@@ -75,7 +79,7 @@ export default function Profile() {
     e.preventDefault()
 
     try {
-    
+
       // const token = document.cookie.split('; ').find(row => row.startsWith('access_token'))?.split('=')[1];
       // console.log("token", token)
 
@@ -92,7 +96,7 @@ export default function Profile() {
           'Content-Type': 'application/json',
           // 'Authorization': `Bearer ${token}`,
         },
-        credentials: 'include', 
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
@@ -106,12 +110,12 @@ export default function Profile() {
       dispatch(updateusersuccess(data))
     } catch (error) {
       dispatch(updateuserFailure(error.message))
-      console.log(" hello ",error)
+      console.log(" hello ", error)
     }
   }
 
   const handleUserDelete = async () => {
-    try{
+    try {
 
       dispatch(deleteUserStart())
 
@@ -119,33 +123,69 @@ export default function Profile() {
         method: "DELETE",
       })
       const data = await res.json()
-      if (data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message))
       }
       dispatch(deleteUserSuccess())
-    }catch(error){
+    } catch (error) {
       dispatch(deleteUserFailure(error.message))
       console.log(error)
     }
   }
 
-  const handleUserSignout = async() => {
-    try{
+  const handleUserSignout = async () => {
+    try {
       dispatch(signoutUserStart())
       const res = await fetch('api/auth/signout', {
         method: 'GET'
       });
       const data = await res.json()
-      if (data.success === false){
+      if (data.success === false) {
         dispatch(signoutUserFailure(data))
       }
       dispatch(signoutUserSuccess());
-      
-    }catch(error){
+
+    } catch (error) {
       dispatch(signoutUserFailure(error.message))
       console.log(error)
     }
 
+  };
+
+  const handleshowlisting = async () => {
+    try {
+      setshowlistingserror(false)
+      const res = await fetch(`/api/user/listings/${currentUser._id}`)
+      const data = await res.json()
+      if (data.success === false) {
+        setshowlistingserror(true)
+        return
+      }
+
+      setUserListings(data)
+      setshowlistingserror(false)
+    } catch (error) {
+      setshowlistingserror(true)
+    }
+  };
+
+  const handleListingDelete = async (listingid) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingid}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingid)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (<>
@@ -161,7 +201,7 @@ export default function Profile() {
 
         <input className='bg-slate-100 w-40 sm:w-80 sm:h-14 p-2 rounded-lg'
           type='text' id='username' defaultValue={formData.username}
-          onChange={handleChange} /><br />  
+          onChange={handleChange} /><br />
 
         <input className='bg-slate-100 w-40 sm:w-80 sm:h-14 p-2 rounded-lg'
           type='text' id='email' defaultValue={formData.email}
@@ -184,6 +224,29 @@ export default function Profile() {
         <span onClick={handleUserSignout} className='text-red-600 cursor-pointer' >Sign Out</span>
       </div>
       <p className='text-red-600'>{errors ? error : ""}</p>
+      <button onClick={handleshowlisting} className='text-green-700 m-2' >
+        Show Listings
+      </button>
+      <p className='text-red-600'>{showlistingserror ? "Error showing listings" : ''}</p>
+
+      {userListings.length > 0 && userListings.map((listing) => (
+        <div key={listing._id} className=' sm:h-40 m-2 flex gap-6 border items-center justify-between' >
+          <Link to={`/listing/${listing._id}`}>
+            <img className='sm:h-40 sm:w-40 h-24 w-24 p-1 m-2' src={listing.imageUrls[0]} alt='Listing' />
+          </Link>
+          <Link to={`/listing/${listing._id}`}>
+            <p className='text-black font-sm hover:underline truncate'>{listing.name}</p>
+          </Link>
+          <div className='flex gap-2 flex-col'>
+            <button onClick={() => handleListingDelete(listing._id)} className='uppercase text-red-600'>Delete</button>
+            <button className='uppercase text-green-600'>Edit</button>
+          </div>
+        </div>
+      )
+
+      )}
+
+
     </div>
 
   </>
