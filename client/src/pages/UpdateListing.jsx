@@ -166,7 +166,7 @@ export default function Createlisting() {
 
   return (<>
     <main className='p-3 max-w-4xl mx-auto'>
-      <h1 className='text-3xl text-center p-2'> Create Listing</h1>
+      <h1 className='text-3xl text-center p-2'> Update Listing</h1>
       <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row'>
         <div className='flex flex-col p-3 gap-3 flex-1'>
 
@@ -268,7 +268,7 @@ export default function Createlisting() {
             </div>
           </div>
           <button className='p-2 bg-slate-700 text-white uppercase'>
-            {loading ? 'Creating...' : 'Create Listing'}
+            {loading ? 'Updating...' : 'Update Listing'}
           </button>
           {error && <p className='text-red-500'>{error}</p>}
         </div>
