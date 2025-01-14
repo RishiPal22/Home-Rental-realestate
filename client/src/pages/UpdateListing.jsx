@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {useSelector} from 'react-redux' 
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 
 export default function Createlisting() {
   const currentUser = useSelector(state => state.user.currentUser)
   const navigate = useNavigate() 
+  const params = useParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [file, setFile] = useState([])
@@ -26,6 +27,25 @@ export default function Createlisting() {
 
   const [imageUploadError, setImageUploadError] = useState(false)
   console.log(formData)
+
+  useEffect(() => {
+    const fetchlisting = async() => {
+      const listingID = params.listingId
+      console.log(listingID)    
+      const res = await fetch(`/api/listing/get/${listingID}`)
+      const data = await res.json()
+
+      if(data.success == false){
+        console.log(data.message)
+        return
+      }
+      setFormData(data)
+      
+    }
+    
+
+    fetchlisting()
+  },[])
 
   const handleImageSubmit = (e) => {
 
@@ -136,8 +156,9 @@ export default function Createlisting() {
       }
       setLoading(true)
       setError(false)
+      // const listingID = params.listingId
 
-      const res = await fetch('/api/listing/create', {
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -267,7 +288,7 @@ export default function Createlisting() {
               ))}
             </div>
           </div>
-          <button className='p-2 bg-slate-700 text-white uppercase'>
+          <button  className='p-2 bg-slate-700 text-white uppercase'>
             {loading ? 'Updating...' : 'Update Listing'}
           </button>
           {error && <p className='text-red-500'>{error}</p>}
