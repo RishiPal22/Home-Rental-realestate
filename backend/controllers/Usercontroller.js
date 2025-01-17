@@ -44,7 +44,7 @@ const deleteUser = async (req, res, next) => {
 const getUserListings = async (req, res, next) => {
     if (req.user.id === req.params.id) {
         try {
-            const listings = await Listing.find({ userRef: req.params.id})
+            const listings = await Listing.find({ userRef: req.params.id })
             res.status(200).json(listings)
         } catch (error) {
             next(error)
@@ -55,5 +55,20 @@ const getUserListings = async (req, res, next) => {
     }
 }
 
-module.exports = { test, updateUser, deleteUser, getUserListings };
+const getUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id)
+        if (!user) {
+            return next(Errorhandler(404, "User not found!"))
+        }
+        const {password: pass , ...rest} = user._doc
+        res.status(201).json(rest)
+        console.log("Risi gor it")
+    } catch (error) {
+        next(Errorhandler(404,"don't know"))
+    }
+
+}
+
+module.exports = { test, updateUser, deleteUser, getUserListings, getUser };
 

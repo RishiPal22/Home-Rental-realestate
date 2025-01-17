@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { useSelector } from 'react-redux';
 import { Navigation } from 'swiper/modules';
+import Contact from '../components/Contact';
 import 'swiper/css/bundle';
 import {
   FaBath,
@@ -14,10 +15,17 @@ import {
 } from 'react-icons/fa';
 export default function Listing() {
   SwiperCore.use([Navigation]);
+  const currentUser = useSelector((state) => state.user)
   const [loading, setloading] = useState(true)
+  const [contact, setContact] = useState(false)
   const [errors, seterrors] = useState(false)
   const [listing, setlisting] = useState()
   const params = useParams()
+
+  console.log(currentUser.currentUser._id)
+  // console.log(currentUser.currentUser.userRef)
+  // console.log(listing.userRef)
+  console.log(currentUser)
 
   useEffect(() => {
 
@@ -45,6 +53,9 @@ export default function Listing() {
 
     fetchlisting()
   }, [])
+
+  console.log("hihi", listing?.userRef);
+
 
   return (<>
     <main>
@@ -118,8 +129,18 @@ export default function Listing() {
               <li className='flex items-center gap-1 whitespace-nowrap '>
                 <FaChair className='text-lg' />
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
+
               </li>
             </ul>
+
+            {/* listing.userRef !== currentUser.currentUser._id && */}
+
+            {currentUser &&  !contact && (
+              <button onClick={() => setContact(true)}
+                className='m-2 text-white bg-slate-700 p-2 hover:opacity-95' >Contact Landlord</button>
+            )}
+
+            {contact && <Contact listing={listing} />}
 
           </div>
         </div>
