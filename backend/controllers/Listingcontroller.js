@@ -75,17 +75,17 @@ const getListings = async (req, res, next) => {
         const startIndex = parseInt(req.query.startIndex) || 0;
 
         let offer = req.query.offer
-        if (offer === undefined || offer === "False") {
+        if (offer === undefined || offer === "false") {
             offer = { $in: [true, false] }
         }
 
         let furnished = req.query.furnished
-        if (furnished === undefined || furnished === "False") {
+        if (furnished === undefined || furnished === "false") {
             furnished = { $in: [true, false] }
         }
 
         let parking = req.query.parking
-        if (parking === undefined || parking === "False") {
+        if (parking === undefined || parking === "false") {
             parking = { $in: [true, false] }
         }
 

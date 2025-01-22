@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Listingitem from '../components/Listingitem'
 
 export default function Search() {
 
     const navigate = useNavigate()
+    const [listing,setlisting] = useState([])
+    const [loading,setloading] = useState(false)
 
     const [sidebardata, setsidebardata] = useState({
         type: "all",
@@ -84,7 +87,28 @@ export default function Search() {
                 order: orderFromUrl || 'desc',
             });
         }
-    }, [location.search])
+
+        const fetchlisting = async () => {
+            setloading(true);
+            const searchQuery = urlParams.toString()
+            const res = await fetch(`/api/listing/get?${searchQuery}`);
+            const data = await res.json();
+            
+            setlisting(data);
+            setloading(false);
+
+        };
+
+        fetchlisting();
+
+        setloading(false)
+
+    }, [location.search]);
+
+    console.log("hellp", listing)
+    console.log("jisfjsjfi", listing._id)
+    console.log("jfi", listing.userRef)
+    console.log("okokoko", listing.name)
 
     return (<>
         <div className='flex flex-col md:flex-row gap-3 p-2 m-3'>
@@ -181,9 +205,20 @@ export default function Search() {
                     </button>
                 </form>
             </div>
-            <div className='font-semibold m-2 p-2 text-3xl'>
-                <h1>Listing Results</h1>
+            <div className='flex-1'>
+                <h1 className='font-semibold m-2 p-2 text-3xl'>Listing Results</h1>
+                <div className='p-2'>
+            {!loading && listing.length === 0 && <p className='text-center text-slate-600 text-2xl'>No listings found!</p>}
+            {loading  && <p className='text-center text-slate-600 text-2xl'>Loading...</p>}
+
+            <div className=' flex flex-wrap gap-3 m-2 p-4 bg-slate-300 items-center justify-star'>
+                {!loading && listing.map((item) => (
+                    <Listingitem key={item._id} item={item} />
+                ))}
             </div>
+            </div>
+            </div>
+            
         </div>
     </>
     )

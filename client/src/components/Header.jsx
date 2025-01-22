@@ -14,7 +14,7 @@ export default function Header() {
     const urlpattern = new URLSearchParams(window.location.search)
     urlpattern.set("searchTerm", searchTerm)
     const searchQuery = urlpattern.toString()
-    navigate(`/listing?${searchQuery}`)
+    navigate(`/search?${searchQuery}`)
   }
 
   useEffect(()=>{
@@ -23,6 +23,9 @@ export default function Header() {
 
     if(searchtermurl){
       setSearchTerm(searchtermurl)
+    }
+    if(!searchtermurl){
+      setSearchTerm('')
     }
   },[location.search])
 
