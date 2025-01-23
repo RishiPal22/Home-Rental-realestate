@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Listingitem from '../components/Listingitem'
+import { set } from 'mongoose'
 
 export default function Search() {
 
     const navigate = useNavigate()
     const [listing,setlisting] = useState([])
     const [loading,setloading] = useState(false)
+    const [showmore,setshowmore] = useState(true)
 
     const [sidebardata, setsidebardata] = useState({
         type: "all",
@@ -89,10 +91,16 @@ export default function Search() {
         }
 
         const fetchlisting = async () => {
+            setshowmore(false)
             setloading(true);
             const searchQuery = urlParams.toString()
             const res = await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
+            if (data.length > 8) {
+                setshowmore(true);
+              } else {
+                setshowmore(false);
+              }
             
             setlisting(data);
             setloading(false);
@@ -105,10 +113,24 @@ export default function Search() {
 
     }, [location.search]);
 
+    const handleClickshowmore = async () => {
+        const noofListings = listing.length;
+        const startIndex = noofListings;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+
+        const data = res.json();
+        if(data.length < 9){
+            setshowmore(false)
+        }
+
+        setlisting([...listing, ...data]);
+
+    }
+
     console.log("hellp", listing)
-    console.log("jisfjsjfi", listing._id)
-    console.log("jfi", listing.userRef)
-    console.log("okokoko", listing.name)
 
     return (<>
         <div className='flex flex-col md:flex-row gap-3 p-2 m-3'>
@@ -211,11 +233,17 @@ export default function Search() {
             {!loading && listing.length === 0 && <p className='text-center text-slate-600 text-2xl'>No listings found!</p>}
             {loading  && <p className='text-center text-slate-600 text-2xl'>Loading...</p>}
 
-            <div className=' flex flex-wrap gap-3 m-2 p-4 bg-slate-300 items-center justify-star'>
+            <div className='flex flex-wrap gap-3 m-2 p-4 items-center justify-star'>
                 {!loading && listing.map((item) => (
                     <Listingitem key={item._id} item={item} />
                 ))}
             </div>
+                { showmore &&
+            <div className='w-full text-center'>
+                <button onClick={handleClickshowmore}
+                 className='text-green-500 hover:underline'>Show More</button>
+            </div>
+                }
             </div>
             </div>
             

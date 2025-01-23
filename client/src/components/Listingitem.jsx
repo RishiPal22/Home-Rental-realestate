@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 
 export default function Listingitem({item}) {
   return (
-    <div className='border sm:w-64 w-full place-items-start shadow-md hover:shadow-lg transition-shadow overflow-hidden '>
-        <Link to={`/listing/${item.id}`} className="text-decoration-none">
+    <div className='border flex flex-wrap sm:w-72 place-items-start shadow-md hover:shadow-lg transition-shadow overflow-hidden '>
+        <Link to={`/listing/${item._id}`} className="text-decoration-none">
         <img className='h-48 sm:h-60 sm:w-64 w-full object-contain hover:scale-105 transition-scale duration-300'
         src={item.imageUrls[0]}/>
          <div className='p-1 flex flex-col gap-2 w-full'>
@@ -16,7 +16,7 @@ export default function Listingitem({item}) {
               {item.address}
             </p>
           </div>
-          <p className='text-sm text-gray-600 line-clamp-4'>
+          <p className='text-sm text-gray-600 line-clamp-3'>
             {item.description}
           </p>
           <p className='text-slate-500 mt-2 font-semibold '>
