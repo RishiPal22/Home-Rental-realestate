@@ -1,4 +1,15 @@
-.rocketCardContainer{
-    height: 50rem;
-    width: 50rem;
+/* .rocketCardContainer{
+    height: 40rem;
+    width: 75rem;
+    overflow: hidden;
+}    */
+/* .rocketCardContainer {
+    width: 80%; 
+    height: 80%;
+    overflow: hidden; 
+    background-color: #f9f9f9; /* Optional: Light background for better visibility */
+ 
+.Carousel img{
+    height: 500px;
 }
+
