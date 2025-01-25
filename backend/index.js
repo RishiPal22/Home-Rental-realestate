@@ -8,6 +8,7 @@ const authrouter = require('./routes/Authroute.js')
 const cookieParser = require('cookie-parser')
 const listingRouter = require('./routes/Listingroute.js')
 const Errorhandler = require('./middleware/Error.js')
+const path = require('path')
 
 // CORS HANDLING
 const corsOptions = {
@@ -21,6 +22,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
+
 // MONGODB CONNECTION
 dotenv.config() 
 mongoose.connect(process.env.MONGOSTRING, {
@@ -29,6 +31,12 @@ mongoose.connect(process.env.MONGOSTRING, {
 })
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.error("Failed to connect to MongoDB", err));
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, '/client/dist')));
+app.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+);
 
 
 

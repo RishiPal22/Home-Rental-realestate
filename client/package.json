@@ -14,6 +14,7 @@
     "@reduxjs/toolkit": "^2.5.0",
     "bootstrap": "^5.3.3",
     "firebase": "^11.1.0",
+    "home-rental-project": "file:..",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.8",
     "react-dom": "^18.3.1",

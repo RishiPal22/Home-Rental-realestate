@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Carousel from 'react-bootstrap/Carousel'
 import '../App.css'
+import Listingitem from '../components/Listingitem';
 
 export default function Home() {
 
@@ -18,10 +19,14 @@ export default function Home() {
         setOfferListings(data)
       }
 
+      fetchOfferListings()
+
     } catch (error) {
       console.log('Error fetching listings', error)
     }
   }, [])
+
+  console.log(offerListings)
 
 
   return (
@@ -50,7 +55,7 @@ export default function Home() {
           <Carousel.Item>
             <img style={{ height: '85vh' }}
               className="d-block w-100"
-              src="https://images.unsplash.com/photo-1640231026037-ffef7d41a14e?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src = "https://st.depositphotos.com/1194063/2151/i/450/depositphotos_21515189-stock-photo-agent-with-house-model-and.jpg"
               alt="First slide"
             />
             {/* <Carousel.Caption>
@@ -72,7 +77,7 @@ export default function Home() {
           <Carousel.Item>
             <img style={{ height: '85vh' }}
               className="d-block w-100"
-              src="holder.js/800x400?text=Third slide&bg=e5e5e5"
+              src="https://images.unsplash.com/photo-1640231026037-ffef7d41a14e?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Third slide"
             />
             {/* <Carousel.Caption>
@@ -91,8 +96,8 @@ export default function Home() {
               <Link className='text-sm text-blue-800 hover:underline' to={'/search?offer=true'}>Show more offers</Link>
             </div>
             <div className='flex flex-wrap gap-4'>
-              {offerListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
+              {offerListings.map((item) => (
+                <Listingitem item={item} key={item._id} />
               ))}
             </div>
           </div>
