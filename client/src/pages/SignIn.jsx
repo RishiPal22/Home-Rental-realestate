@@ -31,7 +31,7 @@ export default function signin() {
     // }
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/signin', {
+      const res = await fetch(`${__API_BASE_URL__}/auth/signin`, {
         method: "POST",
         headers: {
           'Content-Type': "application/json"
